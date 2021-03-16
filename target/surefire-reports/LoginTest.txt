@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: LoginTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.129 s <<< FAILURE! - in LoginTest
+LoginTest.loginSucces  Time elapsed: 0.008 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <Welkom> but was: <Welkom!>
+	at LoginTest.loginSucces(LoginTest.java:40)
+
