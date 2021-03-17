@@ -25,13 +25,10 @@ public class LoginService {
 
         User user = loginDAO.getLogin(userDTO.username, userDTO.password);
 
-        if(user == null){
+        if(user == null || user.getToken() == null){
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        if(user.getToken() == null){
-            return Response.status(401).entity("Token is null").build();
-        }
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.token = user.getToken();
             tokenDTO.user = user.getUser();

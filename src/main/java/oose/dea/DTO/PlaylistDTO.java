@@ -6,5 +6,5 @@ public class PlaylistDTO {
     public int id;
     public String name;
     public boolean owner;
-    public ArrayList<String> tracks;
+    public ArrayList<TrackDTO> tracks;
 }

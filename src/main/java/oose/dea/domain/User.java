@@ -8,19 +8,15 @@ public class User {
     private String token;
     private String user;
 
-    public User(String user){
-        this.user = user;
+    public User(String username){
+        this.username = username;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
+    public String getPassword(){
         return password;
     }
 

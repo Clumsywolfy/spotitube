@@ -1,5 +1,6 @@
 package oose.dea.DAO;
 
+import oose.dea.domain.Track;
 import oose.dea.domain.User;
 
 import javax.annotation.Resource;
@@ -9,10 +10,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
-
+/*
 @Default
-public class LoginDAO  implements ILoginDAO{
+public class TrackDAO implements ITrackDAO{
 
     @Resource(name = "jdbc/spotitube")
     DataSource dataSource;
@@ -31,6 +33,7 @@ public class LoginDAO  implements ILoginDAO{
 
             while (resultSet.next()){
                 User user = new User(resultSet.getString("username"));
+                user.setUsername(resultSet.getString("username"));
                 user.setPassword(resultSet.getString("password"));
                 user.setUser(resultSet.getString("user"));
                 user.setToken(token);
@@ -41,23 +44,9 @@ public class LoginDAO  implements ILoginDAO{
         }
         return null;
     }
-
-    public void addTokenToDatabase(User user){
-        String addTokenQuery = "Update users Set token = ? Where username = ?";
-
-        try(Connection connection = dataSource.getConnection()){
-
-            PreparedStatement statement = connection.prepareStatement(addTokenQuery);
-            statement.setString(1, user.getToken());
-            statement.setString(2, user.getUsername());;
-            statement.executeUpdate();
-
-        } catch(SQLException exception){
-            exception.printStackTrace();
-        }
-    }
-
-    public void setDataSource(DataSource dataSource){
-        this.dataSource = dataSource;
+    @Override
+    public ArrayList<Track> getTracks() {
+        return null;
     }
 }
+*/
