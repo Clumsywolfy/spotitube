@@ -24,6 +24,7 @@ public class LoginTest {
     public void setup(){
         String username = "Debbie";
         String password = "Kauw";
+        String token = "400";
 
         loginService = new LoginService();
         userDTO = new UserDTO();
@@ -32,6 +33,7 @@ public class LoginTest {
 
         userDTO.username = username;
         userDTO.password = password;
+        login.setToken(token);
     }
 
     @Test

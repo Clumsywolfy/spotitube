@@ -9,37 +9,53 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 @Default
 public class LoginDAO  implements ILoginDAO{
 
-    @Resource(name = "jdbc/starwars")
+    @Resource(name = "jdbc/spotitube")
     DataSource dataSource;
 
     @Override
     public User getLogin(String username, String password) {
-        String sql = "select * from users where username = ? AND password = ?";
+        String loginQuery = "select * from users where username = ? AND password = ?";
+        String token = UUID.randomUUID().toString();
 
         try(Connection connection = dataSource.getConnection()){
 
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(loginQuery);
             statement.setString(1,username);
             statement.setString(2,password);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()){
                 User user = new User(resultSet.getString("username"));
-                user.setUser(resultSet.getString("username"));
+                user.setUsername(resultSet.getString("username"));
                 user.setPassword(resultSet.getString("password"));
-
+                user.setUser(resultSet.getString("user"));
+                user.setToken(token);
                 return user;
             }
+        } catch(SQLException exception){
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
+    public void addTokenToDatabase(User user){
+        String addTokenQuery = "Update users Set token = ? Where username = ?";
+
+        try(Connection connection = dataSource.getConnection()){
+
+            PreparedStatement statement = connection.prepareStatement(addTokenQuery);
+            statement.setString(1, user.getToken());
+            statement.setString(2, user.getUsername());;
+            statement.executeUpdate();
 
         } catch(SQLException exception){
             exception.printStackTrace();
         }
-
-        return null;
     }
 
     public void setDataSource(DataSource dataSource){

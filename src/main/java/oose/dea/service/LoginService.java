@@ -3,7 +3,6 @@ package oose.dea.service;
 import oose.dea.DAO.ILoginDAO;
 import oose.dea.DTO.TokenDTO;
 import oose.dea.DTO.UserDTO;
-import oose.dea.domain.Token;
 import oose.dea.domain.User;
 
 import javax.inject.Inject;
@@ -27,19 +26,23 @@ public class LoginService {
         User user = loginDAO.getLogin(userDTO.username, userDTO.password);
 
         if(user == null){
-            return Response.status(401).entity("User doesn't exsist or the password is wrong.").build();
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 
+        if(user.getToken() == null){
+            return Response.status(401).entity("Token is null").build();
         }
             TokenDTO tokenDTO = new TokenDTO();
-            Token token = new Token(userDTO.username);
-            tokenDTO.token = token.getToken();
-            tokenDTO.user = token.getUser();
+            tokenDTO.token = user.getToken();
+            tokenDTO.user = user.getUser();
+            loginDAO.addTokenToDatabase(user);
 
-            return Response.status(200).entity(tokenDTO).build();
+            return Response.status(Response.Status.OK).entity(tokenDTO).build();
         }
 
     @Inject
     public void setLoginDAO(ILoginDAO loginDAO){
         this.loginDAO = loginDAO;
     }
+
 }
