@@ -1,7 +1,7 @@
 package oose.dea.DAO;
 
-import oose.dea.domain.Login;
+import oose.dea.domain.User;
 
 public interface ILoginDAO {
-    Login getLogin();
+    User getLogin(String username, String password);
 }

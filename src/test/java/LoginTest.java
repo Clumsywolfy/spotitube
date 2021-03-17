@@ -1,50 +1,58 @@
-import oose.dea.DTO.LoginDTO;
+
+import oose.dea.DAO.ILoginDAO;
+import oose.dea.DTO.UserDTO;
 import oose.dea.service.LoginService;
-import oose.dea.domain.Login;
+import oose.dea.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LoginTest {
 
-    private LoginService loginController;
-    private LoginDTO loginDTO;
-    private Login login;
+    private LoginService loginService;
+    private UserDTO userDTO;
+    private User login;
+    private ILoginDAO loginDAOMock;
+
 
     @BeforeEach
     public void setup(){
-        loginController = new LoginService();
-        loginDTO = new LoginDTO();
-        login = new Login();
+        String username = "Debbie";
+        String password = "Kauw";
+
+        loginService = new LoginService();
+        userDTO = new UserDTO();
+        login = new User(username);
+        loginDAOMock = mock(ILoginDAO.class);
+
+        userDTO.username = username;
+        userDTO.password = password;
     }
 
     @Test
     public void loginSucces(){
-        String token = "Welkom";
-        String user = "Debbie Kauw";
+        when(loginDAOMock.getLogin(userDTO.username, userDTO.password)).thenReturn(login);
+        loginService.setLoginDAO(loginDAOMock);
 
-        loginDTO.username = "Debbie";
-        loginDTO.password = "Kauw";
-
-        Response response = loginController.getLogin(loginDTO);
-        loginDTO = (LoginDTO) response.getEntity();
+        Response response = loginService.getLogin(userDTO);
 
         assertEquals(200, response.getStatus());
-        assertEquals(token, loginDTO.token);
-        assertEquals(user, loginDTO.user);
+
     }
 
-    @Test
+   @Test
     public void loginFailed(){
-        loginDTO.username = "Marien";
-        loginDTO.password = "Laika";
+       when(loginDAOMock.getLogin(userDTO.username, userDTO.password)).thenReturn(null);
+       loginService.setLoginDAO(loginDAOMock);
 
-        Response response = loginController.getLogin(loginDTO);
+       Response response = loginService.getLogin(userDTO);
 
-        assertEquals(404, response.getStatus());
+       assertEquals(401, response.getStatus());
     }
 
 }

@@ -1,2 +1,14 @@
-oose\dea\service\Spotitube.class
+oose\dea\domain\Playlist.class
+oose\dea\DTO\UserDTO.class
 com\airhacks\JAXRSConfiguration.class
+oose\dea\domain\Playlists.class
+oose\dea\DAO\Spotitube.class
+oose\dea\DTO\PlaylistsDTO.class
+oose\dea\DAO\LoginDAO.class
+oose\dea\service\PlaylistService.class
+com\airhacks\CorsFilter.class
+oose\dea\DAO\ILoginDAO.class
+oose\dea\DTO\TokenDTO.class
+oose\dea\service\LoginService.class
+oose\dea\domain\Login.class
+oose\dea\DTO\PlaylistDTO.class

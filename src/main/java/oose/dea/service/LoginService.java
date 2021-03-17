@@ -1,9 +1,10 @@
 package oose.dea.service;
 
 import oose.dea.DAO.ILoginDAO;
-import oose.dea.DAO.LoginDAO;
-import oose.dea.DTO.LoginDTO;
-import oose.dea.domain.Login;
+import oose.dea.DTO.TokenDTO;
+import oose.dea.DTO.UserDTO;
+import oose.dea.domain.Token;
+import oose.dea.domain.User;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -21,22 +22,21 @@ public class LoginService {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getLogin(LoginDTO loginDTO){
+    public Response getLogin(UserDTO userDTO){
 
-        Login login = loginDAO.getLogin();
+        User user = loginDAO.getLogin(userDTO.username, userDTO.password);
 
-        if(login.getUsername().equals("Debbie") && login.getPassword().equals("Kauw")){
-            loginDTO = new LoginDTO();
-            loginDTO.token = login.getToken();
-            loginDTO.user = login.getUser();
+        if(user == null){
+            return Response.status(401).entity("User doesn't exsist or the password is wrong.").build();
 
-            return Response.status(200).entity(loginDTO).build();
-
-        } else {
-
-            return Response.status(404).build();
         }
-    }
+            TokenDTO tokenDTO = new TokenDTO();
+            Token token = new Token(userDTO.username);
+            tokenDTO.token = token.getToken();
+            tokenDTO.user = token.getUser();
+
+            return Response.status(200).entity(tokenDTO).build();
+        }
 
     @Inject
     public void setLoginDAO(ILoginDAO loginDAO){

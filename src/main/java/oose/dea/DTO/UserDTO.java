@@ -1,8 +1,6 @@
 package oose.dea.DTO;
 
-public class LoginDTO {
+public class UserDTO {
     public String username;
     public String password;
-    public String user;
-    public String token;
 }
