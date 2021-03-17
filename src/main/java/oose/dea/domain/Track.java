@@ -12,7 +12,7 @@ public class Track {
     private boolean offlineAvailable;
 
     public Track(){
-        
+
     }
 
     public int getId() {
