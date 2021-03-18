@@ -1,4 +1,4 @@
-package oose.dea.DTO;
+package oose.dea.resource.DTO;
 
 import java.util.ArrayList;
 

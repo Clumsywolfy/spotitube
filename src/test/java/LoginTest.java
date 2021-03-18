@@ -1,7 +1,7 @@
 
 import oose.dea.DAO.ILoginDAO;
-import oose.dea.DTO.UserDTO;
-import oose.dea.service.LoginService;
+import oose.dea.resource.DTO.UserDTO;
+import oose.dea.resource.LoginService;
 import oose.dea.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

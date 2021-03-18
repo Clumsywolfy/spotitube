@@ -1,8 +1,8 @@
-package oose.dea.service;
+package oose.dea.resource;
 
 import oose.dea.DAO.ILoginDAO;
-import oose.dea.DTO.TokenDTO;
-import oose.dea.DTO.UserDTO;
+import oose.dea.resource.DTO.TokenDTO;
+import oose.dea.resource.DTO.UserDTO;
 import oose.dea.domain.User;
 
 import javax.inject.Inject;
@@ -28,7 +28,6 @@ public class LoginService {
         if(user == null || user.getToken() == null){
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.token = user.getToken();
             tokenDTO.user = user.getUser();

@@ -1,4 +1,4 @@
-package oose.dea.DTO;
+package oose.dea.resource.DTO;
 
 public class UserDTO {
     public String username;

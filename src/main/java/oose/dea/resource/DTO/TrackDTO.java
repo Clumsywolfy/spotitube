@@ -1,4 +1,4 @@
-package oose.dea.DTO;
+package oose.dea.resource.DTO;
 
 public class TrackDTO {
     private int id;

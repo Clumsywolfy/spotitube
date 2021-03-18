@@ -20,15 +20,12 @@ public class TrackDAO implements ITrackDAO{
     DataSource dataSource;
 
     @Override
-    public User getLogin(String username, String password) {
-        String loginQuery = "select * from users where username = ? AND password = ?";
-        String token = UUID.randomUUID().toString();
+    public ArrayList<Track> getTrack() {
+        String trackQuery = "select * from track";
 
         try(Connection connection = dataSource.getConnection()){
 
-            PreparedStatement statement = connection.prepareStatement(loginQuery);
-            statement.setString(1,username);
-            statement.setString(2,password);
+            PreparedStatement statement = connection.prepareStatement(trackQuery);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()){
@@ -44,9 +41,4 @@ public class TrackDAO implements ITrackDAO{
         }
         return null;
     }
-    @Override
-    public ArrayList<Track> getTracks() {
-        return null;
-    }
-}
-*/
+}*/
