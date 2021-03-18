@@ -3,7 +3,6 @@ package oose.dea.resource;
 import oose.dea.DAO.ILoginDAO;
 import oose.dea.DAO.IPlaylistDAO;
 import oose.dea.domain.Playlist;
-import oose.dea.domain.Playlists;
 import oose.dea.domain.User;
 import oose.dea.resource.DTO.PlaylistDTO;
 import oose.dea.resource.DTO.PlaylistsDTO;
@@ -73,11 +72,30 @@ public class PlaylistService {
         }
 
         playlistDAO.addPlaylist(playlistDTO.name, user.getUsername());
-
         return Response.status(Response.Status.OK).entity(playlistsDTO).build();
     }
 
-    public PlaylistsDTO getPlaylists(User user){
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response editPlaylist(@PathParam("id") int id, @QueryParam("token") String token,PlaylistDTO playlistDTO){
+        User user = loginDAO.selectUserFromToken(token);
+        PlaylistsDTO playlistsDTO = getPlaylists(user);
+
+        if(token == null || id < 1){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if ( user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        playlistDAO.editPlaylist(playlistDTO.name, id);
+        return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+    }
+
+    private PlaylistsDTO getPlaylists(User user){
         ArrayList<Playlist> playlists = playlistDAO.getAllPlaylists();
         PlaylistsDTO playlistsDTO = new PlaylistsDTO();
         playlistsDTO.playlists = new ArrayList<>();
