@@ -68,4 +68,32 @@ public class PlaylistDAO implements IPlaylistDAO{
         return 0;
     }
 
+    public void deletePlaylist(int id){
+        String deletePlaylistQuery = "delete from playlist where id = ?";
+
+        try (Connection connection = dataSource.getConnection()) {
+
+            PreparedStatement statement = connection.prepareStatement(deletePlaylistQuery);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void addPlaylist(String name, String owner){
+        String addPlaylistQuery = "insert into playlist (name, owner) values (?,?)";
+
+        try (Connection connection = dataSource.getConnection()) {
+
+            PreparedStatement statement = connection.prepareStatement(addPlaylistQuery);
+            statement.setString(1, name);
+            statement.setString(2, owner);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
 }

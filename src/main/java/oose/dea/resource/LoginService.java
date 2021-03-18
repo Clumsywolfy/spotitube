@@ -33,7 +33,7 @@ public class LoginService {
             tokenDTO.user = user.getUser();
             loginDAO.addTokenToDatabase(user);
 
-            return Response.status(Response.Status.OK).entity(tokenDTO).build();
+            return Response.status(Response.Status.CREATED).entity(tokenDTO).build();
         }
 
     @Inject

@@ -21,16 +21,64 @@ public class PlaylistService {
     private IPlaylistDAO playlistDAO;
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPlaylists(@QueryParam("token") String token) {
         User user = loginDAO.selectUserFromToken(token);
+        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
-        if (token == null || user == null) {
+        if (token == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if ( user == null){
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        ArrayList playlists = playlistDAO.getAllPlaylists();
+            return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token){
+        User user = loginDAO.selectUserFromToken(token);
+        PlaylistsDTO playlistsDTO = getPlaylists(user);
+
+        if(token == null || id < 1){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if ( user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        playlistDAO.deletePlaylist(id);
+        return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlistDTO){
+        User user = loginDAO.selectUserFromToken(token);
+        PlaylistsDTO playlistsDTO = getPlaylists(user);
+
+        if(token == null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if (user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        playlistDAO.addPlaylist(playlistDTO.name, user.getUsername());
+
+        return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+    }
+
+    public PlaylistsDTO getPlaylists(User user){
+        ArrayList<Playlist> playlists = playlistDAO.getAllPlaylists();
         PlaylistsDTO playlistsDTO = new PlaylistsDTO();
         playlistsDTO.playlists = new ArrayList<>();
 
@@ -57,8 +105,8 @@ public class PlaylistService {
 
         playlistsDTO.length = length;
 
-            return Response.status(Response.Status.OK).entity(playlistsDTO).build();
-        }
+        return playlistsDTO;
+    }
 
     @Inject
     public void setLoginDAO(ILoginDAO loginDAO) {
