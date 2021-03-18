@@ -6,7 +6,7 @@ public class Playlist {
     private int id;
     private String name;
     private String owner;
-    private ArrayList<String> tracks;
+    private ArrayList<Track> tracks;
     private int length;
 
     public Playlist(int id) {
@@ -25,7 +25,7 @@ public class Playlist {
         this.name = name;
     }
 
-    public String isOwner() {
+    public String getOwner() {
         return owner;
     }
 
@@ -33,11 +33,11 @@ public class Playlist {
         this.owner = owner;
     }
 
-    public ArrayList<String> getTracks() {
+    public ArrayList<Track> getTracks() {
         return tracks;
     }
 
-    public void setTracks(ArrayList<String> tracks) {
+    public void setTracks(ArrayList<Track> tracks) {
         this.tracks = tracks;
     }
 

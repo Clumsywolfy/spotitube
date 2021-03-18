@@ -1,6 +1,7 @@
 package oose.dea.DAO;
 
 import oose.dea.domain.Playlist;
+import oose.dea.domain.Track;
 import oose.dea.domain.User;
 
 import javax.annotation.Resource;
@@ -32,7 +33,10 @@ public class PlaylistDAO implements IPlaylistDAO{
                 Playlist playlist = new Playlist(resultSet.getInt("id"));
                 playlist.setName(resultSet.getString("name"));
                 playlist.setOwner(resultSet.getString("owner"));
-                
+                playlist.setTracks(new ArrayList<Track>());
+                playlist.setLength(calculatePlaylistLength(resultSet.getInt("id")));
+
+                playlists.add(playlist);
             }
             return playlists;
 
@@ -41,4 +45,27 @@ public class PlaylistDAO implements IPlaylistDAO{
         }
         return null;
     }
+
+    public int calculatePlaylistLength(int id) {
+        String songDurationQuery = "Select duration from track t inner join songsinlist s on t.id = s.trackId where playlistId = ?";
+
+        try (Connection connection = dataSource.getConnection()) {
+
+            PreparedStatement statement = connection.prepareStatement(songDurationQuery);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            int length = 0;
+
+            while (resultSet.next()) {
+                length += (resultSet.getInt("duration"));
+            }
+            return length;
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return 0;
+    }
+
 }

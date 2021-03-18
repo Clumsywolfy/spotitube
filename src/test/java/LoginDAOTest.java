@@ -1,4 +1,3 @@
-import oose.dea.DAO.ILoginDAO;
 import oose.dea.DAO.LoginDAO;
 import oose.dea.domain.User;
 import org.junit.jupiter.api.BeforeEach;

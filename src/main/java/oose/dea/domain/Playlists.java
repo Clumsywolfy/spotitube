@@ -3,14 +3,14 @@ package oose.dea.domain;
 import java.util.ArrayList;
 
 public class Playlists {
-    private ArrayList<String> playlists;
+    private ArrayList<Playlist> playlists;
     private int length;
 
-    public ArrayList<String> getPlaylists() {
+    public ArrayList<Playlist> getPlaylists() {
         return playlists;
     }
 
-    public void setPlaylists(ArrayList<String> playlists) {
+    public void setPlaylists(ArrayList<Playlist> playlists) {
         this.playlists = playlists;
     }
 
