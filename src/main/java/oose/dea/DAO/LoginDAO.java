@@ -42,6 +42,7 @@ public class LoginDAO  implements ILoginDAO{
         return null;
     }
 
+    @Override
     public void addTokenToDatabase(User user){
         String addTokenQuery = "Update users Set token = ? Where username = ?";
 
@@ -55,6 +56,26 @@ public class LoginDAO  implements ILoginDAO{
         } catch(SQLException exception){
             exception.printStackTrace();
         }
+    }
+
+    @Override
+    public User selectUserFromToken(String token){
+        String userQuery = "select * from users where token = ?";
+
+        try(Connection connection = dataSource.getConnection()){
+
+            PreparedStatement statement = connection.prepareStatement(userQuery);
+            statement.setString(1,token);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                User user = new User(resultSet.getString("username"));;
+                return user;
+            }
+        } catch(SQLException exception){
+            exception.printStackTrace();
+        }
+        return null;
     }
 
     public void setDataSource(DataSource dataSource){

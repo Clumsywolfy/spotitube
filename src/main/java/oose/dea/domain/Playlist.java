@@ -5,15 +5,16 @@ import java.util.ArrayList;
 public class Playlist {
     private int id;
     private String name;
-    private boolean owner;
+    private String owner;
     private ArrayList<String> tracks;
+    private int length;
+
+    public Playlist(int id) {
+        this.id = id;
+    }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -24,11 +25,11 @@ public class Playlist {
         this.name = name;
     }
 
-    public boolean isOwner() {
+    public String isOwner() {
         return owner;
     }
 
-    public void setOwner(boolean owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -38,5 +39,13 @@ public class Playlist {
 
     public void setTracks(ArrayList<String> tracks) {
         this.tracks = tracks;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 }
