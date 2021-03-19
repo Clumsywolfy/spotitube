@@ -81,17 +81,14 @@ public class PlaylistService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editPlaylist(@PathParam("id") int id, @QueryParam("token") String token,PlaylistDTO playlistDTO){
         User user = loginDAO.selectUserFromToken(token);
-        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
         if(token == null || id < 1){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        if ( user == null){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
+        playlistDAO.editPlaylist(playlistDTO.name, id, user.getUsername());
+        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
-        playlistDAO.editPlaylist(playlistDTO.name, id);
         return Response.status(Response.Status.OK).entity(playlistsDTO).build();
     }
 
@@ -110,11 +107,8 @@ public class PlaylistService {
 
             playlistDTO.id = list.getId();
             playlistDTO.name = list.getName();
-            if(list.getOwner().equals(user.getUsername())){
-                playlistDTO.owner = true;
-            } else {
-                playlistDTO.owner = false;
-            }
+            playlistDTO.owner = list.getOwner().equals(user.getUsername());
+
             playlistDTO.tracks = list.getTracks();
             length += list.getLength();
 
