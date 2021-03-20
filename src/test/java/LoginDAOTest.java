@@ -113,4 +113,53 @@ public class LoginDAOTest {
             e.getMessage();
         }
     }
+
+    @Test
+    public void selectUserFromTokenTest(){
+        try {
+            String expectedSQL = "select * from users where token = ?";
+            String tokenToTest = "123";
+
+            // instruct Mocks
+            when(dataSource.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(expectedSQL)).thenReturn(preparedStatement);
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+            when(resultSet.next()).thenReturn(false);
+
+            loginDAO.selectUserFromToken(tokenToTest);
+
+            verify(connection).prepareStatement(expectedSQL);
+            verify(preparedStatement).setString(1, tokenToTest);
+            verify(preparedStatement).executeQuery();
+        }
+        catch (Exception e){
+            fail();
+            e.getMessage();
+        }
+    }
+
+    @Test
+    public void selectUserFromTokenResultsTest(){
+        try {
+            String expectedSQL = "select * from users where token = ?";
+            String usernameToTest = "Debbie";
+            String tokenToTest = "123";
+
+            // instruct Mocks
+            when(dataSource.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(expectedSQL)).thenReturn(preparedStatement);
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getString("username")).thenReturn(usernameToTest);
+
+            User user = loginDAO.selectUserFromToken(tokenToTest);
+
+            assertEquals(usernameToTest, user.getUsername());
+        }
+        catch (Exception e){
+            fail();
+            e.getMessage();
+        }
+    }
+
 }
