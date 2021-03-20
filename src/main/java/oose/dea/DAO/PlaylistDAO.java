@@ -68,13 +68,14 @@ public class PlaylistDAO implements IPlaylistDAO{
         return 0;
     }
 
-    public void deletePlaylist(int id){
-        String deletePlaylistQuery = "delete from playlist where id = ?";
+    public void deletePlaylist(int id, String owner){
+        String deletePlaylistQuery = "delete from playlist where id = ? and owner = ?";
 
         try (Connection connection = dataSource.getConnection()) {
 
             PreparedStatement statement = connection.prepareStatement(deletePlaylistQuery);
             statement.setInt(1, id);
+            statement.setString(2, owner);
             statement.executeUpdate();
 
         } catch (SQLException exception) {
@@ -112,5 +113,36 @@ public class PlaylistDAO implements IPlaylistDAO{
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public ArrayList<Track> getAllPlaylistTracks(int id){
+        String trackInPlaylistsQuery = "select * from track where id IN ( select trackId from songsinlist where playlistId = ?)";
+
+        try(Connection connection = dataSource.getConnection()){
+
+            PreparedStatement statement = connection.prepareStatement(trackInPlaylistsQuery);
+            statement.setInt(1,id);
+            ResultSet resultSet = statement.executeQuery();
+
+            ArrayList<Track> tracks = new ArrayList<>();
+
+            while (resultSet.next()){
+                Track track = new Track(resultSet.getInt("id"));
+                track.setTitle(resultSet.getString("title"));
+                track.setPerformer(resultSet.getString("performer"));
+                track.setDuration(resultSet.getInt("duration"));
+                track.setAlbum(resultSet.getString("album"));
+                track.setPlaycount(resultSet.getInt("playcount"));
+                track.setPublicationDate(resultSet.getString("publicationDate"));
+                track.setDescription(resultSet.getString("description"));
+                track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
+                tracks.add(track);
+            }
+            return tracks;
+
+        } catch(SQLException exception){
+            exception.printStackTrace();
+        }
+        return null;
     }
 }

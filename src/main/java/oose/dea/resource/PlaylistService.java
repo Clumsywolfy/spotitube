@@ -6,6 +6,8 @@ import oose.dea.domain.Playlist;
 import oose.dea.domain.User;
 import oose.dea.resource.DTO.PlaylistDTO;
 import oose.dea.resource.DTO.PlaylistsDTO;
+import oose.dea.resource.DTO.TrackDTO;
+import oose.dea.resource.DTO.TracksDTO;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -42,7 +44,6 @@ public class PlaylistService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token){
         User user = loginDAO.selectUserFromToken(token);
-        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
         if(token == null || id < 1){
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -52,7 +53,9 @@ public class PlaylistService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        playlistDAO.deletePlaylist(id);
+        playlistDAO.deletePlaylist(id, user.getUsername());
+        PlaylistsDTO playlistsDTO = getPlaylists(user);
+
         return Response.status(Response.Status.OK).entity(playlistsDTO).build();
     }
 
@@ -61,7 +64,6 @@ public class PlaylistService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlistDTO){
         User user = loginDAO.selectUserFromToken(token);
-        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
         if(token == null){
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -72,6 +74,8 @@ public class PlaylistService {
         }
 
         playlistDAO.addPlaylist(playlistDTO.name, user.getUsername());
+        PlaylistsDTO playlistsDTO = getPlaylists(user);
+
         return Response.status(Response.Status.OK).entity(playlistsDTO).build();
     }
 
@@ -86,10 +90,34 @@ public class PlaylistService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        if (user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         playlistDAO.editPlaylist(playlistDTO.name, id, user.getUsername());
         PlaylistsDTO playlistsDTO = getPlaylists(user);
 
         return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+    }
+
+    @GET
+    @Path("/{id}/tracks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllPlaylistTracks(@QueryParam("token") String token, @PathParam("id") int id){
+        User user = loginDAO.selectUserFromToken(token);
+
+        if(token == null || id < 1){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if (user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        TracksDTO tracksDTO = new TracksDTO();
+        tracksDTO.tracks = playlistDAO.getAllPlaylistTracks(id);
+
+        return Response.status(Response.Status.OK).entity(tracksDTO).build();
     }
 
     private PlaylistsDTO getPlaylists(User user){

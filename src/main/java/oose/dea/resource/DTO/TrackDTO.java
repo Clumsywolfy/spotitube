@@ -1,13 +1,13 @@
 package oose.dea.resource.DTO;
 
 public class TrackDTO {
-    private int id;
-    private String title;
-    private String performer;
-    private int duration;
-    private String album;
-    private int playcount;
-    private String publicationDate;
-    private String description;
-    private boolean offlineAvailable;
+    public int id;
+    public String title;
+    public String performer;
+    public int duration;
+    public String album;
+    public int playcount;
+    public String publicationDate;
+    public String description;
+    public boolean offlineAvailable;
 }
