@@ -120,6 +120,53 @@ public class PlaylistService {
         return Response.status(Response.Status.OK).entity(tracksDTO).build();
     }
 
+    @DELETE
+    @Path("/{id}/tracks/{trackId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteFromPlaylist(@PathParam("id") int id, @PathParam("trackId") int trackId, @QueryParam("token") String token){
+        User user = loginDAO.selectUserFromToken(token);
+
+        if(token == null || id < 1 || trackId < 1){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if ( user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        playlistDAO.deleteTrackFromPlaylist(id, trackId, user.getUsername());
+
+        TracksDTO tracksDTO = new TracksDTO();
+        tracksDTO.tracks = playlistDAO.getAllPlaylistTracks(id);
+
+        return Response.status(Response.Status.OK).entity(tracksDTO).build();
+    }
+
+    @POST
+    @Path("/{id}/tracks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addToPlaylist(@PathParam("id") int id, @QueryParam("token") String token, TrackDTO trackDTO){
+        User user = loginDAO.selectUserFromToken(token);
+
+        if(token == null || id < 1 ){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if ( user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        playlistDAO.addTrackToPlaylist(id, trackDTO.id);
+        playlistDAO.setTrackAvailable(trackDTO.offlineAvailable, trackDTO.id);
+
+        TracksDTO tracksDTO = new TracksDTO();
+        tracksDTO.tracks = playlistDAO.getAllPlaylistTracks(id);
+
+        return Response.status(Response.Status.OK).entity(tracksDTO).build();
+    }
+
     private PlaylistsDTO getPlaylists(User user){
         ArrayList<Playlist> playlists = playlistDAO.getAllPlaylists();
         PlaylistsDTO playlistsDTO = new PlaylistsDTO();

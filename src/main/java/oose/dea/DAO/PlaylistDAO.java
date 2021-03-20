@@ -115,6 +115,54 @@ public class PlaylistDAO implements IPlaylistDAO{
         }
     }
 
+    @Override
+    public void deleteTrackFromPlaylist(int playlistId, int trackId, String owner){
+        String deletePlaylistQuery = "delete s from songsinlist s inner join playlist p on p.id = s.playlistId where s.playlistId = ? and s.trackId = ? and p.owner = ?";
+
+        try (Connection connection = dataSource.getConnection()) {
+
+            PreparedStatement statement = connection.prepareStatement(deletePlaylistQuery);
+            statement.setInt(1, playlistId);
+            statement.setInt(2, trackId);
+            statement.setString(3, owner);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addTrackToPlaylist(int playlistId, int trackId){
+        String addPlaylistQuery = "insert into songsinlist values (?,?)";
+
+        try (Connection connection = dataSource.getConnection()) {
+
+            PreparedStatement statement = connection.prepareStatement(addPlaylistQuery);
+            statement.setInt(1, playlistId);
+            statement.setInt(2, trackId);
+            statement.executeUpdate();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void setTrackAvailable(boolean offline, int id){
+        String tracksQuery = "Update track Set offlineAvailable = ? Where id = ?";
+
+        try(Connection connection = dataSource.getConnection()){
+
+            PreparedStatement statement = connection.prepareStatement(tracksQuery);
+            statement.setBoolean(1, offline);
+            statement.setInt(2, id);
+            statement.executeUpdate();
+
+        } catch(SQLException exception){
+            exception.printStackTrace();
+        }
+    }
+
     public ArrayList<Track> getAllPlaylistTracks(int id){
         String trackInPlaylistsQuery = "select * from track where id IN ( select trackId from songsinlist where playlistId = ?)";
 

@@ -72,6 +72,7 @@ public class LoginDAO  implements ILoginDAO{
                 User user = new User(resultSet.getString("username"));;
                 return user;
             }
+
         } catch(SQLException exception){
             exception.printStackTrace();
         }
