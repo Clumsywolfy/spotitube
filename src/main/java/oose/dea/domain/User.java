@@ -1,7 +1,5 @@
 package oose.dea.domain;
 
-import java.util.UUID;
-
 public class User {
     private String username;
     private String password;

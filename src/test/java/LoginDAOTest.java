@@ -1,5 +1,7 @@
 import oose.dea.DAO.LoginDAO;
 import oose.dea.domain.User;
+import oose.dea.exceptions.connectionErrorException;
+import oose.dea.exceptions.unauthorizedUserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +38,7 @@ public class LoginDAOTest {
             String expectedSQL = "select * from users where username = ? AND password = ?";
             String usernameToTest = "Debbie";
             String passwordToTest = "Kauw";
+            String expectedError = "Gebruiker bestaat niet.";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -43,15 +46,16 @@ public class LoginDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            User user = loginDAO.getLogin(usernameToTest,passwordToTest);
+            Exception exception = assertThrows(unauthorizedUserException.class, () -> { loginDAO.getLogin(usernameToTest,passwordToTest);});
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setString(1,usernameToTest);
             verify(preparedStatement).setString(2, passwordToTest);
             verify(preparedStatement).executeQuery();
 
-            assertNull(user);
+            String actualError = exception.getMessage();
 
+            assertTrue(actualError.contains(expectedError));
         }
         catch (Exception e){
             fail();
@@ -119,6 +123,7 @@ public class LoginDAOTest {
         try {
             String expectedSQL = "select * from users where token = ?";
             String tokenToTest = "123";
+            String expectedError = "Gebruiker bestaat niet.";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -126,11 +131,15 @@ public class LoginDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            loginDAO.selectUserFromToken(tokenToTest);
+            Exception exception = assertThrows(unauthorizedUserException.class, () -> { loginDAO.selectUserFromToken(tokenToTest);});
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setString(1, tokenToTest);
             verify(preparedStatement).executeQuery();
+
+            String actualError = exception.getMessage();
+
+            assertTrue(actualError.contains(expectedError));
         }
         catch (Exception e){
             fail();

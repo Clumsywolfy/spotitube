@@ -19,7 +19,6 @@ public class Track {
         return id;
     }
 
-
     public String getTitle() {
         return title;
     }

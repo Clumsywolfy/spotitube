@@ -1,8 +1,7 @@
 package oose.dea.DAO;
 
 import oose.dea.domain.Playlist;
-import oose.dea.domain.Track;
-import oose.dea.domain.User;
+import oose.dea.exceptions.connectionErrorException;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -11,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class PlaylistDAO implements IPlaylistDAO{
 
@@ -33,7 +31,7 @@ public class PlaylistDAO implements IPlaylistDAO{
                 Playlist playlist = new Playlist(resultSet.getInt("id"));
                 playlist.setName(resultSet.getString("name"));
                 playlist.setOwner(resultSet.getString("owner"));
-                playlist.setTracks(new ArrayList<Track>());
+                playlist.setTracks(new ArrayList<>());
                 playlist.setLength(calculatePlaylistLength(resultSet.getInt("id")));
 
                 playlists.add(playlist);
@@ -41,12 +39,11 @@ public class PlaylistDAO implements IPlaylistDAO{
             return playlists;
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
-        return null;
     }
 
-    public int calculatePlaylistLength(int id) {
+    private int calculatePlaylistLength(int id) {
         String songDurationQuery = "Select duration from track t inner join songsinlist s on t.id = s.trackId where playlistId = ?";
 
         try (Connection connection = dataSource.getConnection()) {
@@ -63,9 +60,8 @@ public class PlaylistDAO implements IPlaylistDAO{
             return length;
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
-        return 0;
     }
 
     public void deletePlaylist(int id, String owner){
@@ -79,7 +75,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
     }
 
@@ -94,7 +90,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
     }
 
@@ -111,7 +107,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
     }
 
@@ -128,7 +124,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
     }
 
@@ -144,7 +140,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
     }
 
@@ -159,38 +155,11 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
     }
 
-    public ArrayList<Track> getAllPlaylistTracks(int id){
-        String trackInPlaylistsQuery = "select * from track where id IN ( select trackId from songsinlist where playlistId = ?)";
-
-        try(Connection connection = dataSource.getConnection()){
-
-            PreparedStatement statement = connection.prepareStatement(trackInPlaylistsQuery);
-            statement.setInt(1,id);
-            ResultSet resultSet = statement.executeQuery();
-
-            ArrayList<Track> tracks = new ArrayList<>();
-
-            while (resultSet.next()){
-                Track track = new Track(resultSet.getInt("id"));
-                track.setTitle(resultSet.getString("title"));
-                track.setPerformer(resultSet.getString("performer"));
-                track.setDuration(resultSet.getInt("duration"));
-                track.setAlbum(resultSet.getString("album"));
-                track.setPlaycount(resultSet.getInt("playcount"));
-                track.setPublicationDate(resultSet.getString("publicationDate"));
-                track.setDescription(resultSet.getString("description"));
-                track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
-                tracks.add(track);
-            }
-            return tracks;
-
-        } catch(SQLException exception){
-            exception.printStackTrace();
-        }
-        return null;
+    public void setDataSource(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 }

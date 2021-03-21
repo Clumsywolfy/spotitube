@@ -1,6 +1,7 @@
 package oose.dea.resource;
 
 import oose.dea.DAO.ILoginDAO;
+import oose.dea.exceptions.unauthorizedUserException;
 import oose.dea.resource.DTO.TokenDTO;
 import oose.dea.resource.DTO.UserDTO;
 import oose.dea.domain.User;
@@ -21,13 +22,10 @@ public class LoginService {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getLogin(UserDTO userDTO){
+    public Response getLogin(UserDTO userDTO) throws unauthorizedUserException {
 
         User user = loginDAO.getLogin(userDTO.username, userDTO.password);
 
-        if(user == null || user.getToken() == null){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.token = user.getToken();
             tokenDTO.user = user.getUser();

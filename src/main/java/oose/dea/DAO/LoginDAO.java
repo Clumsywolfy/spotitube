@@ -1,6 +1,8 @@
 package oose.dea.DAO;
 
 import oose.dea.domain.User;
+import oose.dea.exceptions.unauthorizedUserException;
+import oose.dea.exceptions.connectionErrorException;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.Default;
@@ -18,7 +20,7 @@ public class LoginDAO  implements ILoginDAO{
     DataSource dataSource;
 
     @Override
-    public User getLogin(String username, String password) {
+    public User getLogin(String username, String password) throws unauthorizedUserException {
         String loginQuery = "select * from users where username = ? AND password = ?";
         String token = UUID.randomUUID().toString();
 
@@ -37,9 +39,9 @@ public class LoginDAO  implements ILoginDAO{
                 return user;
             }
         } catch(SQLException exception){
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
-        return null;
+        throw new unauthorizedUserException("Gebruiker bestaat niet.");
     }
 
     @Override
@@ -54,12 +56,12 @@ public class LoginDAO  implements ILoginDAO{
             statement.executeUpdate();
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
     }
 
     @Override
-    public User selectUserFromToken(String token){
+    public User selectUserFromToken(String token) throws unauthorizedUserException {
         String userQuery = "select * from users where token = ?";
 
         try(Connection connection = dataSource.getConnection()){
@@ -74,9 +76,9 @@ public class LoginDAO  implements ILoginDAO{
             }
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
-        return null;
+        throw new unauthorizedUserException("Gebruiker bestaat niet.");
     }
 
     public void setDataSource(DataSource dataSource){

@@ -1,7 +1,7 @@
 package oose.dea.DAO;
 
-import oose.dea.domain.Playlist;
 import oose.dea.domain.Track;
+import oose.dea.exceptions.connectionErrorException;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -17,8 +17,13 @@ public class TrackDAO implements ITrackDAO{
     DataSource dataSource;
 
     @Override
-    public ArrayList<Track> getAllTracks(int playlist) {
-        String tracksQuery = "select * from track where id NOT IN ( select trackId from songsinlist where playlistId = ?)";
+    public ArrayList<Track> getAllTracks(int playlist, boolean isTrack) {
+        String tracksQuery;
+        if(isTrack) {
+            tracksQuery = "select * from track where id NOT IN ( select trackId from songsinlist where playlistId = ?)";
+        } else {
+            tracksQuery = "select * from track where id IN ( select trackId from songsinlist where playlistId = ?)";
+        }
 
         try(Connection connection = dataSource.getConnection()){
 
@@ -43,9 +48,7 @@ public class TrackDAO implements ITrackDAO{
             return tracks;
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            throw new connectionErrorException(exception.toString());
         }
-        return null;
     }
-
 }
