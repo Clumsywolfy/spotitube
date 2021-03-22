@@ -32,14 +32,14 @@ public class LoginTest {
         user = new User(username);
         loginDAOMock = mock(ILoginDAO.class);
 
-        userDTO.username = username;
+        userDTO.user = username;
         userDTO.password = password;
         user.setToken(token);
     }
 
     @Test
     public void loginSuccesTest() throws unauthorizedUserException {
-        when(loginDAOMock.getLogin(userDTO.username, userDTO.password)).thenReturn(user);
+        when(loginDAOMock.getLogin(userDTO.user, userDTO.password)).thenReturn(user);
         loginServiceMock.setLoginDAO(loginDAOMock);
 
         Response response = loginServiceMock.getLogin(userDTO);

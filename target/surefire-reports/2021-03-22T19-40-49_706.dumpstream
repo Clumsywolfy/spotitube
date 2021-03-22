@@ -1,4 +1,4 @@
-# Created at 2021-03-16T13:11:50.558
+# Created at 2021-03-22T19:40:50.456
 Boot Manifest-JAR contains absolute paths in classpath 'Z:\lessen\WT\spotitube\target\test-classes'
 Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
 

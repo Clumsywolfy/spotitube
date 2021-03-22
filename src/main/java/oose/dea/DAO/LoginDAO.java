@@ -11,9 +11,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Default
-public class LoginDAO  implements ILoginDAO{
+public class LoginDAO implements ILoginDAO{
+
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     @Resource(name = "jdbc/spotitube")
     DataSource dataSource;
@@ -38,7 +41,7 @@ public class LoginDAO  implements ILoginDAO{
                 return user;
             }
         } catch(SQLException exception){
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
         throw new unauthorizedUserException("Gebruiker bestaat niet.");
     }

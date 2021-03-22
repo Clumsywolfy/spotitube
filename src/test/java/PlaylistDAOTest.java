@@ -50,6 +50,43 @@ public class PlaylistDAOTest {
             when(dataSource.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(expectedSQL)).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+
+            when(resultSet.getInt("id")).thenReturn(playlistIdToTest);
+            when(resultSet.getString("name")).thenReturn(nameToTest);
+            when(resultSet.getString("owner")).thenReturn(ownerToTest);
+
+            String expectedLengthSQL = "Select duration from track t inner join songsinlist s on t.id = s.trackId where playlistId = ?";
+
+            // instruct Mocks
+            preparedStatement = mock(PreparedStatement.class);
+            when(dataSource.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(expectedLengthSQL)).thenReturn(preparedStatement);
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+
+            when(resultSet.getInt("duration")).thenReturn(lengthToTest);
+
+            playlistDAO.getAllPlaylists();
+
+            verify(connection).prepareStatement(expectedSQL);
+            verify(preparedStatement).executeQuery();
+
+        } catch (Exception e) {
+            fail();
+            e.getMessage();
+        }
+    }
+
+    @Test
+    public void getAllPlaylistsTest() {
+        try {
+            String expectedSQL = "Select * from playlist";
+
+            // instruct Mocks
+            when(dataSource.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(expectedSQL)).thenReturn(preparedStatement);
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
             playlistDAO.getAllPlaylists();

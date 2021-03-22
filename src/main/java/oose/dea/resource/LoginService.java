@@ -24,7 +24,7 @@ public class LoginService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getLogin(UserDTO userDTO) throws unauthorizedUserException {
 
-        User user = loginDAO.getLogin(userDTO.username, userDTO.password);
+        User user = loginDAO.getLogin(userDTO.user, userDTO.password);
 
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.token = user.getToken();
