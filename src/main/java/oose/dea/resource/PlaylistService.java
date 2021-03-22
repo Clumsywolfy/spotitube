@@ -41,7 +41,7 @@ public class PlaylistService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) throws unauthorizedUserException, badRequestException {
+    public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) throws unauthorizedUserException, badRequestException{
         User user = loginDAO.selectUserFromToken(token);
 
         if(token == null || id < 1){
@@ -132,7 +132,7 @@ public class PlaylistService {
         }
 
         playlistDAO.addTrackToPlaylist(id, trackDTO.id);
-        playlistDAO.setTrackAvailable(trackDTO.offlineAvailable, trackDTO.id);
+        trackDAO.setTrackAvailable(trackDTO.offlineAvailable, trackDTO.id);
 
         TracksDTO tracksDTO = new TracksDTO();
         tracksDTO.tracks = trackDAO.getAllTracks(id,false);
@@ -150,13 +150,11 @@ public class PlaylistService {
         for(Object playlist : playlists){
 
             Playlist list = (Playlist) playlist;
-
             PlaylistDTO playlistDTO = new PlaylistDTO();
 
             playlistDTO.id = list.getId();
             playlistDTO.name = list.getName();
             playlistDTO.owner = list.getOwner().equals(user.getUsername());
-
             playlistDTO.tracks = list.getTracks();
             length += list.getLength();
 

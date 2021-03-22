@@ -1,6 +1,5 @@
 import oose.dea.DAO.LoginDAO;
 import oose.dea.domain.User;
-import oose.dea.exceptions.connectionErrorException;
 import oose.dea.exceptions.unauthorizedUserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

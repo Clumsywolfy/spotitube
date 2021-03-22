@@ -2,7 +2,6 @@ package oose.dea.DAO;
 
 import oose.dea.domain.User;
 import oose.dea.exceptions.unauthorizedUserException;
-import oose.dea.exceptions.connectionErrorException;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.Default;
@@ -39,7 +38,7 @@ public class LoginDAO  implements ILoginDAO{
                 return user;
             }
         } catch(SQLException exception){
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
         throw new unauthorizedUserException("Gebruiker bestaat niet.");
     }
@@ -56,7 +55,7 @@ public class LoginDAO  implements ILoginDAO{
             statement.executeUpdate();
 
         } catch(SQLException exception){
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
     }
 
@@ -76,7 +75,7 @@ public class LoginDAO  implements ILoginDAO{
             }
 
         } catch(SQLException exception){
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
         throw new unauthorizedUserException("Gebruiker bestaat niet.");
     }

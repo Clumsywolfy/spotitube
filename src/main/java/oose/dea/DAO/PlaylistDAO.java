@@ -1,7 +1,6 @@
 package oose.dea.DAO;
 
 import oose.dea.domain.Playlist;
-import oose.dea.exceptions.connectionErrorException;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -17,7 +16,7 @@ public class PlaylistDAO implements IPlaylistDAO{
     DataSource dataSource;
 
     @Override
-    public ArrayList<Playlist> getAllPlaylists() {
+    public ArrayList getAllPlaylists() {
         String playlistsQuery = "Select * from playlist";
 
         try(Connection connection = dataSource.getConnection()){
@@ -39,11 +38,12 @@ public class PlaylistDAO implements IPlaylistDAO{
             return playlists;
 
         } catch(SQLException exception){
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
+        return null;
     }
 
-    private int calculatePlaylistLength(int id) {
+    public int calculatePlaylistLength(int id) {
         String songDurationQuery = "Select duration from track t inner join songsinlist s on t.id = s.trackId where playlistId = ?";
 
         try (Connection connection = dataSource.getConnection()) {
@@ -60,8 +60,9 @@ public class PlaylistDAO implements IPlaylistDAO{
             return length;
 
         } catch (SQLException exception) {
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
+        return 0;
     }
 
     public void deletePlaylist(int id, String owner){
@@ -75,7 +76,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
     }
 
@@ -90,7 +91,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
     }
 
@@ -107,7 +108,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
     }
 
@@ -124,7 +125,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
     }
 
@@ -140,22 +141,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            throw new connectionErrorException(exception.toString());
-        }
-    }
-
-    public void setTrackAvailable(boolean offline, int id){
-        String tracksQuery = "Update track Set offlineAvailable = ? Where id = ?";
-
-        try(Connection connection = dataSource.getConnection()){
-
-            PreparedStatement statement = connection.prepareStatement(tracksQuery);
-            statement.setBoolean(1, offline);
-            statement.setInt(2, id);
-            statement.executeUpdate();
-
-        } catch(SQLException exception){
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
     }
 

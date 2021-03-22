@@ -1,9 +1,9 @@
 package oose.dea.DAO;
 
 import oose.dea.domain.Track;
-import oose.dea.exceptions.connectionErrorException;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,7 +48,26 @@ public class TrackDAO implements ITrackDAO{
             return tracks;
 
         } catch(SQLException exception){
-            throw new connectionErrorException(exception.toString());
+            exception.printStackTrace();
         }
+        return null;
+    }
+    public void setTrackAvailable(boolean offline, int id){
+        String tracksQuery = "Update track Set offlineAvailable = ? Where id = ?";
+
+        try(Connection connection = dataSource.getConnection()){
+
+            PreparedStatement statement = connection.prepareStatement(tracksQuery);
+            statement.setBoolean(1, offline);
+            statement.setInt(2, id);
+            statement.executeUpdate();
+
+        } catch(SQLException exception){
+            exception.printStackTrace();
+        }
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 }

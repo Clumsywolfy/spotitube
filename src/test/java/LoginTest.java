@@ -46,14 +46,4 @@ public class LoginTest {
 
         assertEquals(200, response.getStatus());
     }
-
-    @Test
-    public void loginFailureTest() throws unauthorizedUserException {
-        when(loginDAOMock.getLogin(userDTO.username, userDTO.password)).thenReturn(null);
-        loginService.setLoginDAO(loginDAOMock);
-
-        Response response = loginService.getLogin(userDTO);
-
-        assertEquals(401, response.getStatus());
-    }
 }
