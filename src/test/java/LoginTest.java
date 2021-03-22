@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 public class LoginTest {
 
-    private LoginService loginService;
+    private LoginService loginServiceMock;
     private UserDTO userDTO;
     private User user;
     private ILoginDAO loginDAOMock;
@@ -27,7 +27,7 @@ public class LoginTest {
         String password = "Kauw";
         String token = "400";
 
-        loginService = new LoginService();
+        loginServiceMock = new LoginService();
         userDTO = new UserDTO();
         user = new User(username);
         loginDAOMock = mock(ILoginDAO.class);
@@ -40,9 +40,9 @@ public class LoginTest {
     @Test
     public void loginSuccesTest() throws unauthorizedUserException {
         when(loginDAOMock.getLogin(userDTO.username, userDTO.password)).thenReturn(user);
-        loginService.setLoginDAO(loginDAOMock);
+        loginServiceMock.setLoginDAO(loginDAOMock);
 
-        Response response = loginService.getLogin(userDTO);
+        Response response = loginServiceMock.getLogin(userDTO);
 
         assertEquals(200, response.getStatus());
     }

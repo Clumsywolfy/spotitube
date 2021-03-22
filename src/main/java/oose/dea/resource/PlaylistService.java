@@ -29,12 +29,11 @@ public class PlaylistService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPlaylists(@QueryParam("token") String token) throws unauthorizedUserException, badRequestException {
         User user = loginDAO.selectUserFromToken(token);
-        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
         if (token == null) {
             throw new badRequestException("Token is onjuist.");
         }
-            return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+            return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
     @DELETE
@@ -49,9 +48,8 @@ public class PlaylistService {
         }
 
         playlistDAO.deletePlaylist(id, user.getUsername());
-        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
-        return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+        return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
     @POST
@@ -65,9 +63,8 @@ public class PlaylistService {
         }
 
         playlistDAO.addPlaylist(playlistDTO.name, user.getUsername());
-        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
-        return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+        return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
     @PUT
@@ -82,9 +79,8 @@ public class PlaylistService {
         }
 
         playlistDAO.editPlaylist(playlistDTO.name, id, user.getUsername());
-        PlaylistsDTO playlistsDTO = getPlaylists(user);
 
-        return Response.status(Response.Status.OK).entity(playlistsDTO).build();
+        return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
     @GET

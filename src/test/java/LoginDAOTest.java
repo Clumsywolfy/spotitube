@@ -21,6 +21,9 @@ public class LoginDAOTest {
     private ResultSet resultSet;
     private LoginDAO loginDAO;
 
+    String usernameToTest;
+    String passwordToTest;
+
     @BeforeEach
     public void setup(){
         dataSource = mock(DataSource.class);
@@ -29,14 +32,15 @@ public class LoginDAOTest {
         resultSet = mock(ResultSet.class);
         loginDAO = new LoginDAO();
         loginDAO.setDataSource(dataSource);
+
+        usernameToTest = "Debbie";
+        passwordToTest = "Kauw";
     }
 
     @Test
     public void getLoginTest(){
         try {
             String expectedSQL = "select * from users where username = ? AND password = ?";
-            String usernameToTest = "Debbie";
-            String passwordToTest = "Kauw";
             String expectedError = "Gebruiker bestaat niet.";
 
             // instruct Mocks
@@ -66,8 +70,6 @@ public class LoginDAOTest {
     public void getLoginResultsTest(){
         try {
             String expectedSQL = "select * from users where username = ? AND password = ?";
-            String usernameToTest = "Debbie";
-            String passwordToTest = "Kauw";
             String userToTest = "Debbie Kauw";
 
             // instruct Mocks
@@ -95,7 +97,6 @@ public class LoginDAOTest {
     public void addTokenToDatabaseTest(){
         try {
             String expectedSQL = "Update users Set token = ? Where username = ?";
-            String usernameToTest = "Debbie";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
