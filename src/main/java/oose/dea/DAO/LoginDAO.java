@@ -1,6 +1,7 @@
 package oose.dea.DAO;
 
 import oose.dea.domain.User;
+import oose.dea.exceptions.badRequestException;
 import oose.dea.exceptions.unauthorizedUserException;
 
 import javax.annotation.Resource;
@@ -23,7 +24,7 @@ public class LoginDAO implements ILoginDAO{
 
     @Override
     public User getLogin(String username, String password) throws unauthorizedUserException {
-        String loginQuery = "select * from users where username = ? AND password = ?";
+        String loginQuery = "SELECT * FROM users WHERE username = ? AND password = ?";
         String token = UUID.randomUUID().toString();
 
         try(Connection connection = dataSource.getConnection()){
@@ -48,7 +49,7 @@ public class LoginDAO implements ILoginDAO{
 
     @Override
     public void addTokenToDatabase(User user){
-        String addTokenQuery = "Update users Set token = ? Where username = ?";
+        String addTokenQuery = "UPDATE users SET token = ? WHERE username = ?";
 
         try(Connection connection = dataSource.getConnection()){
 
@@ -58,13 +59,13 @@ public class LoginDAO implements ILoginDAO{
             statement.executeUpdate();
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
     }
 
     @Override
-    public User selectUserFromToken(String token) throws unauthorizedUserException {
-        String userQuery = "select * from users where token = ?";
+    public User selectUserFromToken(String token) throws badRequestException {
+        String userQuery = "SELECT * FROM users WHERE token = ?";
 
         try(Connection connection = dataSource.getConnection()){
 
@@ -78,9 +79,9 @@ public class LoginDAO implements ILoginDAO{
             }
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
-        throw new unauthorizedUserException("Gebruiker bestaat niet.");
+        throw new badRequestException("Token is onjuist.");
     }
 
     public void setDataSource(DataSource dataSource){

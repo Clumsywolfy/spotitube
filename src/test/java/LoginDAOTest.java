@@ -1,5 +1,6 @@
 import oose.dea.DAO.LoginDAO;
 import oose.dea.domain.User;
+import oose.dea.exceptions.badRequestException;
 import oose.dea.exceptions.unauthorizedUserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class LoginDAOTest {
     private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
-    private LoginDAO loginDAO;
+    private LoginDAO sut;
 
     String usernameToTest;
     String passwordToTest;
@@ -30,8 +31,8 @@ public class LoginDAOTest {
         connection = mock(Connection.class);
         preparedStatement = mock(PreparedStatement.class);
         resultSet = mock(ResultSet.class);
-        loginDAO = new LoginDAO();
-        loginDAO.setDataSource(dataSource);
+        sut = new LoginDAO();
+        sut.setDataSource(dataSource);
 
         usernameToTest = "Debbie";
         passwordToTest = "Kauw";
@@ -40,7 +41,7 @@ public class LoginDAOTest {
     @Test
     public void getLoginTest(){
         try {
-            String expectedSQL = "select * from users where username = ? AND password = ?";
+            String expectedSQL = "SELECT * FROM users WHERE username = ? AND password = ?";
             String expectedError = "Gebruiker bestaat niet.";
 
             // instruct Mocks
@@ -49,7 +50,7 @@ public class LoginDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            Exception exception = assertThrows(unauthorizedUserException.class, () -> { loginDAO.getLogin(usernameToTest,passwordToTest);});
+            Exception exception = assertThrows(unauthorizedUserException.class, () -> { sut.getLogin(usernameToTest,passwordToTest);});
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setString(1,usernameToTest);
@@ -69,7 +70,7 @@ public class LoginDAOTest {
     @Test
     public void getLoginResultsTest(){
         try {
-            String expectedSQL = "select * from users where username = ? AND password = ?";
+            String expectedSQL = "SELECT * FROM users WHERE username = ? AND password = ?";
             String userToTest = "Debbie Kauw";
 
             // instruct Mocks
@@ -81,7 +82,7 @@ public class LoginDAOTest {
             when(resultSet.getString("password")).thenReturn(passwordToTest);
             when(resultSet.getString("user")).thenReturn(userToTest);
 
-            User user = loginDAO.getLogin(usernameToTest,passwordToTest);
+            User user = sut.getLogin(usernameToTest,passwordToTest);
 
             assertEquals(usernameToTest, user.getUsername());
             assertEquals(passwordToTest, user.getPassword());
@@ -96,7 +97,7 @@ public class LoginDAOTest {
     @Test
     public void addTokenToDatabaseTest(){
         try {
-            String expectedSQL = "Update users Set token = ? Where username = ?";
+            String expectedSQL = "UPDATE users SET token = ? WHERE username = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -105,7 +106,7 @@ public class LoginDAOTest {
             when(resultSet.next()).thenReturn(false);
 
             User user = new User(usernameToTest);
-            loginDAO.addTokenToDatabase(user);
+            sut.addTokenToDatabase(user);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setString(1, user.getToken());
@@ -121,9 +122,9 @@ public class LoginDAOTest {
     @Test
     public void selectUserFromTokenTest(){
         try {
-            String expectedSQL = "select * from users where token = ?";
+            String expectedSQL = "SELECT * FROM users WHERE token = ?";
             String tokenToTest = "123";
-            String expectedError = "Gebruiker bestaat niet.";
+            String expectedError = "Token is onjuist.";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -131,7 +132,7 @@ public class LoginDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            Exception exception = assertThrows(unauthorizedUserException.class, () -> { loginDAO.selectUserFromToken(tokenToTest);});
+            Exception exception = assertThrows(badRequestException.class, () -> { sut.selectUserFromToken(tokenToTest);});
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setString(1, tokenToTest);
@@ -150,7 +151,7 @@ public class LoginDAOTest {
     @Test
     public void selectUserFromTokenResultsTest(){
         try {
-            String expectedSQL = "select * from users where token = ?";
+            String expectedSQL = "SELECT * FROM users WHERE token = ?";
             String usernameToTest = "Debbie";
             String tokenToTest = "123";
 
@@ -161,7 +162,7 @@ public class LoginDAOTest {
             when(resultSet.next()).thenReturn(true).thenReturn(false);
             when(resultSet.getString("username")).thenReturn(usernameToTest);
 
-            User user = loginDAO.selectUserFromToken(tokenToTest);
+            User user = sut.selectUserFromToken(tokenToTest);
 
             assertEquals(usernameToTest, user.getUsername());
         }

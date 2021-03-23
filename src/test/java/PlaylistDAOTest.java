@@ -44,7 +44,7 @@ public class PlaylistDAOTest {
     @Test
     public void getAllPlaylistsResultTest() {
         try {
-            String expectedSQL = "Select * from playlist";
+            String expectedSQL = "SELECT * FROM playlist";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -56,7 +56,7 @@ public class PlaylistDAOTest {
             when(resultSet.getString("name")).thenReturn(nameToTest);
             when(resultSet.getString("owner")).thenReturn(ownerToTest);
 
-            String expectedLengthSQL = "Select duration from track t inner join songsinlist s on t.id = s.trackId where playlistId = ?";
+            String expectedLengthSQL = "SELECT duration FROM track t INNER JOIN songsinlist s ON t.id = s.trackId WHERE playlistId = ?";
 
             // instruct Mocks
             preparedStatement = mock(PreparedStatement.class);
@@ -81,7 +81,7 @@ public class PlaylistDAOTest {
     @Test
     public void getAllPlaylistsTest() {
         try {
-            String expectedSQL = "Select * from playlist";
+            String expectedSQL = "SELECT * FROM playlist";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -103,7 +103,7 @@ public class PlaylistDAOTest {
     @Test
     public void calculatePlaylistLengthTest() {
         try {
-            String expectedSQL = "Select duration from track t inner join songsinlist s on t.id = s.trackId where playlistId = ?";
+            String expectedSQL = "SELECT duration FROM track t INNER JOIN songsinlist s ON t.id = s.trackId WHERE playlistId = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -130,7 +130,7 @@ public class PlaylistDAOTest {
     @Test
     public void deletePlaylistTest () {
         try {
-            String expectedSQL = "delete from playlist where id = ? and owner = ?";
+            String expectedSQL = "DELETE FROM playlist WHERE id = ? AND owner = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -154,7 +154,7 @@ public class PlaylistDAOTest {
     @Test
     public void addPlaylistTest () {
         try {
-            String expectedSQL = "insert into playlist (name, owner) values (?,?)";
+            String expectedSQL = "INSERT INTO playlist (name, owner) VALUES (?,?)";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -178,7 +178,7 @@ public class PlaylistDAOTest {
     @Test
     public void editPlaylistTest () {
         try {
-            String expectedSQL = "Update playlist Set name = ? Where id = ? and owner = ?";
+            String expectedSQL = "UPDATE playlist SET name = ? WHERE id = ? AND owner = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -203,7 +203,7 @@ public class PlaylistDAOTest {
     @Test
     public void deleteTrackFromPlaylistTest () {
         try {
-            String expectedSQL = "delete s from songsinlist s inner join playlist p on p.id = s.playlistId where s.playlistId = ? and s.trackId = ? and p.owner = ?";
+            String expectedSQL = "DELETE s FROM songsinlist s INNER JOIN playlist p ON p.id = s.playlistId WHERE s.playlistId = ? AND s.trackId = ? AND p.owner = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -228,7 +228,7 @@ public class PlaylistDAOTest {
     @Test
     public void addTrackToPlaylistTest () {
         try {
-            String expectedSQL = "insert into songsinlist values (?,?)";
+            String expectedSQL = "INSERT INTO songsinlist VALUES (?,?)";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);

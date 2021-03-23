@@ -6,7 +6,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -45,7 +44,7 @@ public class TrackDAOTest {
     @Test
     public void getAllTracksTrackTest(){
         try {
-            String expectedSQL = "select * from track where id NOT IN ( select trackId from songsinlist where playlistId = ?)";
+            String expectedSQL = "SELECT * FROM track WHERE id NOT IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -69,7 +68,7 @@ public class TrackDAOTest {
     @Test
     public void getAllTracksPlaylistTest(){
         try {
-            String expectedSQL = "select * from track where id IN ( select trackId from songsinlist where playlistId = ?)";
+            String expectedSQL = "SELECT * FROM track WHERE id IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -93,7 +92,7 @@ public class TrackDAOTest {
     @Test
     public void setTrackAvailableTest(){
         try {
-            String expectedSQL = "Update track Set offlineAvailable = ? Where id = ?";
+            String expectedSQL = "UPDATE track SET offlineAvailable = ? WHERE id = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);

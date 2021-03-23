@@ -4,8 +4,6 @@ import oose.dea.DAO.ITrackDAO;
 import oose.dea.domain.Playlist;
 import oose.dea.domain.Track;
 import oose.dea.domain.User;
-import oose.dea.exceptions.badRequestException;
-import oose.dea.exceptions.unauthorizedUserException;
 import oose.dea.resource.DTO.PlaylistDTO;
 import oose.dea.resource.DTO.PlaylistsDTO;
 import oose.dea.resource.DTO.TrackDTO;
@@ -193,25 +191,6 @@ public class PlaylistTest {
 
         } catch (Exception e) {
             fail(e);
-        }
-    }
-
-    @Test
-    public void tokenIsNullTest(){
-        try {
-            String expectedError = "Token is onjuist.";
-
-            when(loginDAOMock.selectUserFromToken(tokenToTest)).thenReturn(user);
-
-            Exception exception = assertThrows(badRequestException.class, () -> { sut.getAllPlaylists(null);});
-
-            String actualError = exception.getMessage();
-
-            assertTrue(actualError.contains(expectedError));
-        }
-        catch (Exception e){
-            fail();
-            e.getMessage();
         }
     }
 }

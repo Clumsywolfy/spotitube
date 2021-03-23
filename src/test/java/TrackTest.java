@@ -1,8 +1,6 @@
 import oose.dea.DAO.ILoginDAO;
 import oose.dea.DAO.ITrackDAO;
 import oose.dea.domain.Track;
-import oose.dea.domain.User;
-import oose.dea.resource.DTO.*;
 import oose.dea.resource.TrackService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

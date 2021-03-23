@@ -9,15 +9,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class PlaylistDAO implements IPlaylistDAO{
+
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     @Resource(name = "jdbc/spotitube")
     DataSource dataSource;
 
     @Override
     public ArrayList getAllPlaylists() {
-        String playlistsQuery = "Select * from playlist";
+        String playlistsQuery = "SELECT * FROM playlist";
 
         try(Connection connection = dataSource.getConnection()){
 
@@ -38,13 +41,13 @@ public class PlaylistDAO implements IPlaylistDAO{
             return playlists;
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
         return null;
     }
 
     public int calculatePlaylistLength(int id) {
-        String songDurationQuery = "Select duration from track t inner join songsinlist s on t.id = s.trackId where playlistId = ?";
+        String songDurationQuery = "SELECT duration FROM track t INNER JOIN songsinlist s ON t.id = s.trackId WHERE playlistId = ?";
 
         try (Connection connection = dataSource.getConnection()) {
 
@@ -60,13 +63,13 @@ public class PlaylistDAO implements IPlaylistDAO{
             return length;
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
         return 0;
     }
 
     public void deletePlaylist(int id, String owner){
-        String deletePlaylistQuery = "delete from playlist where id = ? and owner = ?";
+        String deletePlaylistQuery = "DELETE FROM playlist WHERE id = ? AND owner = ?";
 
         try (Connection connection = dataSource.getConnection()) {
 
@@ -76,12 +79,12 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
     }
 
     public void addPlaylist(String name, String owner){
-        String addPlaylistQuery = "insert into playlist (name, owner) values (?,?)";
+        String addPlaylistQuery = "INSERT INTO playlist (name, owner) VALUES (?,?)";
 
         try (Connection connection = dataSource.getConnection()) {
 
@@ -91,13 +94,13 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
     }
 
     @Override
     public void editPlaylist(String name, int id, String user) {
-        String editPlaylistQuery = "Update playlist Set name = ? Where id = ? and owner = ?";
+        String editPlaylistQuery = "UPDATE playlist SET name = ? WHERE id = ? AND owner = ?";
 
         try (Connection connection = dataSource.getConnection()) {
 
@@ -108,13 +111,13 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
     }
 
     @Override
     public void deleteTrackFromPlaylist(int playlistId, int trackId, String owner){
-        String deletePlaylistQuery = "delete s from songsinlist s inner join playlist p on p.id = s.playlistId where s.playlistId = ? and s.trackId = ? and p.owner = ?";
+        String deletePlaylistQuery = "DELETE s FROM songsinlist s INNER JOIN playlist p ON p.id = s.playlistId WHERE s.playlistId = ? AND s.trackId = ? AND p.owner = ?";
 
         try (Connection connection = dataSource.getConnection()) {
 
@@ -125,13 +128,13 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
     }
 
     @Override
     public void addTrackToPlaylist(int playlistId, int trackId){
-        String addPlaylistQuery = "insert into songsinlist values (?,?)";
+        String addPlaylistQuery = "INSERT INTO songsinlist VALUES (?,?)";
 
         try (Connection connection = dataSource.getConnection()) {
 
@@ -141,7 +144,7 @@ public class PlaylistDAO implements IPlaylistDAO{
             statement.executeUpdate();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
     }
 

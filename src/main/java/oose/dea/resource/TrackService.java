@@ -25,14 +25,9 @@ public class TrackService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllAvailableTracks(@QueryParam("forPlaylist") int playlist, @QueryParam("token") String token) throws unauthorizedUserException, badRequestException {
+    public Response getAllAvailableTracks(@QueryParam("forPlaylist") int playlist, @QueryParam("token") String token) throws badRequestException {
         loginDAO.selectUserFromToken(token);
         TracksDTO tracksDTO = getTracks(playlist);
-
-        if (token == null || playlist < 1) {
-            throw new badRequestException("Token of playlist id is onjuist.");
-        }
-
         return Response.status(Response.Status.OK).entity(tracksDTO).build();
     }
 

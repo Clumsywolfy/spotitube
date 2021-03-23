@@ -3,15 +3,17 @@ package oose.dea.DAO;
 import oose.dea.domain.Track;
 
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class TrackDAO implements ITrackDAO{
+
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     @Resource(name = "jdbc/spotitube")
     DataSource dataSource;
@@ -20,9 +22,9 @@ public class TrackDAO implements ITrackDAO{
     public ArrayList<Track> getAllTracks(int playlist, boolean isTrack) {
         String tracksQuery;
         if(isTrack) {
-            tracksQuery = "select * from track where id NOT IN ( select trackId from songsinlist where playlistId = ?)";
+            tracksQuery = "SELECT * FROM track WHERE id NOT IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
         } else {
-            tracksQuery = "select * from track where id IN ( select trackId from songsinlist where playlistId = ?)";
+            tracksQuery = "SELECT * FROM track WHERE id IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
         }
 
         try(Connection connection = dataSource.getConnection()){
@@ -48,12 +50,12 @@ public class TrackDAO implements ITrackDAO{
             return tracks;
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
         return null;
     }
     public void setTrackAvailable(boolean offline, int id){
-        String tracksQuery = "Update track Set offlineAvailable = ? Where id = ?";
+        String tracksQuery = "UPDATE track SET offlineAvailable = ? WHERE id = ?";
 
         try(Connection connection = dataSource.getConnection()){
 
@@ -63,7 +65,7 @@ public class TrackDAO implements ITrackDAO{
             statement.executeUpdate();
 
         } catch(SQLException exception){
-            exception.printStackTrace();
+            logger.severe(exception.getMessage());
         }
     }
 

@@ -27,43 +27,27 @@ public class PlaylistService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllPlaylists(@QueryParam("token") String token) throws unauthorizedUserException, badRequestException {
+    public Response getAllPlaylists(@QueryParam("token") String token) throws badRequestException {
         User user = loginDAO.selectUserFromToken(token);
-
-        if (token == null) {
-            throw new badRequestException("Token is onjuist.");
-        }
-            return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
+        return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) throws unauthorizedUserException, badRequestException{
+    public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) throws  badRequestException{
         User user = loginDAO.selectUserFromToken(token);
-
-        if(token == null || id < 1){
-            throw new badRequestException("Token of playlist id is onjuist.");
-        }
-
         playlistDAO.deletePlaylist(id, user.getUsername());
-
         return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlistDTO) throws unauthorizedUserException, badRequestException {
+    public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlistDTO) throws badRequestException {
         User user = loginDAO.selectUserFromToken(token);
-
-        if(token == null){
-            throw new badRequestException("Token is onjuist.");
-        }
-
         playlistDAO.addPlaylist(playlistDTO.name, user.getUsername());
-
         return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
@@ -71,30 +55,19 @@ public class PlaylistService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response editPlaylist(@PathParam("id") int id, @QueryParam("token") String token,PlaylistDTO playlistDTO) throws unauthorizedUserException, badRequestException {
+    public Response editPlaylist(@PathParam("id") int id, @QueryParam("token") String token,PlaylistDTO playlistDTO) throws badRequestException {
         User user = loginDAO.selectUserFromToken(token);
-
-        if(token == null || id < 1){
-            throw new badRequestException("Token of playlist id is onjuist.");
-        }
-
         playlistDAO.editPlaylist(playlistDTO.name, id, user.getUsername());
-
         return Response.status(Response.Status.OK).entity(getPlaylists(user)).build();
     }
 
     @GET
     @Path("/{id}/tracks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllPlaylistTracks(@QueryParam("token") String token, @PathParam("id") int id) throws unauthorizedUserException, badRequestException {
+    public Response getAllPlaylistTracks(@QueryParam("token") String token, @PathParam("id") int id) throws  badRequestException {
         loginDAO.selectUserFromToken(token);
-        if(token == null || id < 1){
-            throw new badRequestException("Token of playlist id is onjuist.");
-        }
-
         TracksDTO tracksDTO = new TracksDTO();
         tracksDTO.tracks = trackDAO.getAllTracks(id,false);
-
         return Response.status(Response.Status.OK).entity(tracksDTO).build();
     }
 
@@ -102,18 +75,11 @@ public class PlaylistService {
     @Path("/{id}/tracks/{trackId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteFromPlaylist(@PathParam("id") int id, @PathParam("trackId") int trackId, @QueryParam("token") String token) throws unauthorizedUserException, badRequestException {
+    public Response deleteFromPlaylist(@PathParam("id") int id, @PathParam("trackId") int trackId, @QueryParam("token") String token) throws badRequestException {
         User user = loginDAO.selectUserFromToken(token);
-
-        if(token == null || id < 1 || trackId < 1){
-            throw new badRequestException("Token of playlist id is onjuist.");
-        }
-
         playlistDAO.deleteTrackFromPlaylist(id, trackId, user.getUsername());
-
         TracksDTO tracksDTO = new TracksDTO();
         tracksDTO.tracks = trackDAO.getAllTracks(id,false);
-
         return Response.status(Response.Status.OK).entity(tracksDTO).build();
     }
 
@@ -121,18 +87,12 @@ public class PlaylistService {
     @Path("/{id}/tracks")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addToPlaylist(@PathParam("id") int id, @QueryParam("token") String token, TrackDTO trackDTO) throws unauthorizedUserException, badRequestException {
+    public Response addToPlaylist(@PathParam("id") int id, @QueryParam("token") String token, TrackDTO trackDTO) throws badRequestException {
         loginDAO.selectUserFromToken(token);
-        if(token == null || id < 1 ){
-            throw new badRequestException("Token of playlist id is onjuist.");
-        }
-
         playlistDAO.addTrackToPlaylist(id, trackDTO.id);
         trackDAO.setTrackAvailable(trackDTO.offlineAvailable, trackDTO.id);
-
         TracksDTO tracksDTO = new TracksDTO();
         tracksDTO.tracks = trackDAO.getAllTracks(id,false);
-
         return Response.status(Response.Status.OK).entity(tracksDTO).build();
     }
 

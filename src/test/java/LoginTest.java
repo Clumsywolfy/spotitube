@@ -1,6 +1,5 @@
 
 import oose.dea.DAO.ILoginDAO;
-import oose.dea.exceptions.unauthorizedUserException;
 import oose.dea.resource.DTO.UserDTO;
 import oose.dea.resource.LoginService;
 import oose.dea.domain.User;
