@@ -51,7 +51,7 @@ public class TrackDAOTest {
             when(dataSource.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(expectedSQL)).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
-            when(resultSet.next()).thenReturn(false);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
 
             trackDAOMock.getAllTracks(playlistToTest, isTrackToTest);
 

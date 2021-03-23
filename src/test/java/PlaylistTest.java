@@ -1,9 +1,14 @@
 import oose.dea.DAO.ILoginDAO;
 import oose.dea.DAO.IPlaylistDAO;
+import oose.dea.DAO.ITrackDAO;
 import oose.dea.domain.Playlist;
+import oose.dea.domain.Track;
 import oose.dea.domain.User;
+import oose.dea.exceptions.badRequestException;
+import oose.dea.exceptions.unauthorizedUserException;
 import oose.dea.resource.DTO.PlaylistDTO;
 import oose.dea.resource.DTO.PlaylistsDTO;
+import oose.dea.resource.DTO.TrackDTO;
 import oose.dea.resource.PlaylistService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,57 +24,74 @@ public class PlaylistTest {
 
     private ILoginDAO loginDAOMock;
     private IPlaylistDAO playlistDAOMock;
+    private ITrackDAO trackDAOMock;
     private PlaylistService sut;
-    private PlaylistsDTO playlistsDTO;
-    private PlaylistDTO playlistDTO;
     private User user;
+    private Playlist playlist;
+    private Track track;
+    private PlaylistDTO playlistDTO;
+    private TrackDTO trackDTO;
 
-    private String token;
-    private String username;
-    private String password;
+    private String tokenToTest;
+    private String usernameToTest;
     private final int OK = 200;
+    private int idToTest;
+    private String nameToTest;
+    private String ownerToTest;
+    private ArrayList tracksToTest;
+    private ArrayList<Playlist> playlistsArray;
+    private ArrayList<Track> tracksArray;
 
     @BeforeEach
     public void setup() {
-        token = "400";
-        username = "Debbie";
-        password = "Kauw";
+        tokenToTest = "400";
+        usernameToTest = "Debbie";
+        idToTest = 1;
+        nameToTest = "Metal";
+        ownerToTest = "Debbie";
+        tracksToTest = new ArrayList<>();
+        playlistsArray = new ArrayList<>();
+        tracksArray = new ArrayList<>();
 
         loginDAOMock = mock(ILoginDAO.class);
         playlistDAOMock = mock(IPlaylistDAO.class);
+        trackDAOMock = mock(ITrackDAO.class);
         sut = new PlaylistService();
-        user = new User(username);
-
+        user = new User(usernameToTest);
         playlistDTO = new PlaylistDTO();
-        playlistDTO.id = 1;
-        playlistDTO.name = "Metal";
-        playlistDTO.owner = true;
-        playlistDTO.tracks = new ArrayList<>();
+        trackDTO = new TrackDTO();
 
-        playlistsDTO = new PlaylistsDTO();
-        playlistsDTO.playlists = new ArrayList<>();
-        playlistsDTO.length = 100;
-        playlistsDTO.playlists.add(playlistDTO);
+        playlist = new Playlist(idToTest);
+        playlist.setName(nameToTest);
+        playlist.setOwner(ownerToTest);
+        playlist.setTracks(tracksToTest);
+
+        playlistsArray.add(playlist);
+
+        track = new Track(idToTest);
+        track.setTitle(nameToTest);
+        track.setPerformer(ownerToTest);
+        track.setDuration(400);
+        track.setAlbum(nameToTest);
+        track.setPlaycount(idToTest);
+        track.setPublicationDate("2020");
+        track.setDescription(nameToTest);
+        track.setOfflineAvailable(false);
+
+        tracksArray.add(track);
+
+        sut.setLoginDAO(loginDAOMock);
+        sut.setPlaylistDAO(playlistDAOMock);
+        sut.setTrackDAO(trackDAOMock);
     }
 
     @Test
     public void getAllPlaylistsTest() {
-        ArrayList<Playlist> playlistsArray = new ArrayList<>();
-
-        Playlist playlist = new Playlist(1);
-        playlist.setName("luuk");
-        playlist.setOwner("luuk");
-        playlist.setTracks(new ArrayList<>());
-
-        playlistsArray.add(playlist);
-
         try {
-            when(loginDAOMock.selectUserFromToken(token)).thenReturn(user);
+            when(loginDAOMock.selectUserFromToken(tokenToTest)).thenReturn(user);
             when(playlistDAOMock.getAllPlaylists()).thenReturn(playlistsArray);
-            sut.setLoginDAO(loginDAOMock);
-            sut.setPlaylistDAO(playlistDAOMock);
 
-            Response response = sut.getAllPlaylists(token);
+            Response response = sut.getAllPlaylists(tokenToTest);
             PlaylistsDTO playlistsDTOResponse = (PlaylistsDTO) response.getEntity();
 
             assertEquals(OK, response.getStatus());
@@ -77,6 +99,119 @@ public class PlaylistTest {
 
       } catch (Exception e) {
             fail(e);
+        }
+    }
+
+    @Test
+    public void deletePlaylistTest() {
+        try {
+            when(loginDAOMock.selectUserFromToken(tokenToTest)).thenReturn(user);
+            when(playlistDAOMock.getAllPlaylists()).thenReturn(playlistsArray);
+
+            Response response = sut.deletePlaylist(idToTest, tokenToTest);
+            PlaylistsDTO playlistsDTOResponse = (PlaylistsDTO) response.getEntity();
+
+            assertEquals(OK, response.getStatus());
+            assertEquals(playlist.getId(), playlistsDTOResponse.playlists.get(0).id);
+
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void addPlaylistTest() {
+        try {
+            when(loginDAOMock.selectUserFromToken(tokenToTest)).thenReturn(user);
+            when(playlistDAOMock.getAllPlaylists()).thenReturn(playlistsArray);
+
+            Response response = sut.addPlaylist(tokenToTest, playlistDTO);
+            PlaylistsDTO playlistsDTOResponse = (PlaylistsDTO) response.getEntity();
+
+            assertEquals(OK, response.getStatus());
+            assertEquals(playlist.getId(), playlistsDTOResponse.playlists.get(0).id);
+
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void editPlaylistTest() {
+        try {
+            when(loginDAOMock.selectUserFromToken(tokenToTest)).thenReturn(user);
+            when(playlistDAOMock.getAllPlaylists()).thenReturn(playlistsArray);
+
+            Response response = sut.editPlaylist(idToTest, tokenToTest, playlistDTO);
+            PlaylistsDTO playlistsDTOResponse = (PlaylistsDTO) response.getEntity();
+
+            assertEquals(OK, response.getStatus());
+            assertEquals(playlist.getId(), playlistsDTOResponse.playlists.get(0).id);
+
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void getAllPlaylistTracksTest() {
+        try {
+            when(trackDAOMock.getAllTracks(idToTest,false)).thenReturn(tracksArray);
+
+            Response response = sut.getAllPlaylistTracks(tokenToTest, idToTest);
+
+            assertEquals(OK, response.getStatus());
+
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void deleteFromPlaylistTest() {
+        try {
+            when(loginDAOMock.selectUserFromToken(tokenToTest)).thenReturn(user);
+            when(trackDAOMock.getAllTracks(idToTest,false)).thenReturn(tracksArray);
+
+            Response response = sut.deleteFromPlaylist(idToTest, idToTest, tokenToTest);
+
+            assertEquals(OK, response.getStatus());
+
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void addToPlaylistTest() {
+        try{
+            when(trackDAOMock.getAllTracks(idToTest,false)).thenReturn(tracksArray);
+
+            Response response = sut.addToPlaylist(idToTest, tokenToTest, trackDTO);
+
+            assertEquals(OK, response.getStatus());
+
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void tokenIsNullTest(){
+        try {
+            String expectedError = "Token is onjuist.";
+
+            when(loginDAOMock.selectUserFromToken(tokenToTest)).thenReturn(user);
+
+            Exception exception = assertThrows(badRequestException.class, () -> { sut.getAllPlaylists(null);});
+
+            String actualError = exception.getMessage();
+
+            assertTrue(actualError.contains(expectedError));
+        }
+        catch (Exception e){
+            fail();
+            e.getMessage();
         }
     }
 }

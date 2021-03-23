@@ -25,7 +25,6 @@ public class LoginTest {
     public void setup(){
         String username = "Debbie";
         String password = "Kauw";
-        String token = "400";
 
         loginServiceMock = new LoginService();
         userDTO = new UserDTO();
@@ -34,16 +33,19 @@ public class LoginTest {
 
         userDTO.user = username;
         userDTO.password = password;
-        user.setToken(token);
     }
 
     @Test
-    public void loginSuccesTest() throws unauthorizedUserException {
+    public void loginSuccesTest() {
+        try{
         when(loginDAOMock.getLogin(userDTO.user, userDTO.password)).thenReturn(user);
         loginServiceMock.setLoginDAO(loginDAOMock);
 
         Response response = loginServiceMock.getLogin(userDTO);
 
         assertEquals(200, response.getStatus());
+        } catch (Exception e) {
+            fail(e);
+        }
     }
 }
