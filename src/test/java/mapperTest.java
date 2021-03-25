@@ -1,7 +1,7 @@
 import oose.dea.exceptions.badRequestException;
-import oose.dea.exceptions.badRequestExceptionMapper;
+import oose.dea.exceptions.mappers.badRequestExceptionMapper;
 import oose.dea.exceptions.unauthorizedUserException;
-import oose.dea.exceptions.unauthorizedUserExceptionMapper;
+import oose.dea.exceptions.mappers.unauthorizedUserExceptionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

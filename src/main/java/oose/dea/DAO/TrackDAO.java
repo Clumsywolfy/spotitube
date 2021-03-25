@@ -54,6 +54,7 @@ public class TrackDAO implements ITrackDAO{
         }
         return null;
     }
+
     public void setTrackAvailable(boolean offline, int id){
         String tracksQuery = "UPDATE track SET offlineAvailable = ? WHERE id = ?";
 

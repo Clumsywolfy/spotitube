@@ -22,8 +22,12 @@ public class LoginDAOTest {
     private ResultSet resultSet;
     private LoginDAO sut;
 
-    String usernameToTest;
-    String passwordToTest;
+    private String usernameToTest;
+    private String passwordToTest;
+    private String tokenToTest;
+    private String expectedSQL;
+    private String expectedError;
+    private String userToTest;
 
     @BeforeEach
     public void setup(){
@@ -36,13 +40,15 @@ public class LoginDAOTest {
 
         usernameToTest = "Debbie";
         passwordToTest = "Kauw";
+        tokenToTest = "123";
+        userToTest = "Debbie Kauw";
     }
 
     @Test
     public void getLoginTest(){
         try {
-            String expectedSQL = "SELECT * FROM users WHERE username = ? AND password = ?";
-            String expectedError = "Gebruiker bestaat niet.";
+            expectedSQL = "SELECT * FROM users WHERE username = ? AND password = ?";
+            expectedError = "Gebruiker bestaat niet.";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -70,8 +76,7 @@ public class LoginDAOTest {
     @Test
     public void getLoginResultsTest(){
         try {
-            String expectedSQL = "SELECT * FROM users WHERE username = ? AND password = ?";
-            String userToTest = "Debbie Kauw";
+            expectedSQL = "SELECT * FROM users WHERE username = ? AND password = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -97,7 +102,7 @@ public class LoginDAOTest {
     @Test
     public void addTokenToDatabaseTest(){
         try {
-            String expectedSQL = "UPDATE users SET token = ? WHERE username = ?";
+            expectedSQL = "UPDATE users SET token = ? WHERE username = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -122,9 +127,8 @@ public class LoginDAOTest {
     @Test
     public void selectUserFromTokenTest(){
         try {
-            String expectedSQL = "SELECT * FROM users WHERE token = ?";
-            String tokenToTest = "123";
-            String expectedError = "Token is onjuist.";
+            expectedSQL = "SELECT * FROM users WHERE token = ?";
+            expectedError = "Token is onjuist.";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -151,9 +155,7 @@ public class LoginDAOTest {
     @Test
     public void selectUserFromTokenResultsTest(){
         try {
-            String expectedSQL = "SELECT * FROM users WHERE token = ?";
-            String usernameToTest = "Debbie";
-            String tokenToTest = "123";
+            expectedSQL = "SELECT * FROM users WHERE token = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);

@@ -1,9 +1,9 @@
-package oose.dea.resource;
+package oose.dea.rest;
 
 import oose.dea.DAO.ILoginDAO;
 import oose.dea.exceptions.unauthorizedUserException;
-import oose.dea.resource.DTO.TokenDTO;
-import oose.dea.resource.DTO.UserDTO;
+import oose.dea.rest.DTO.TokenDTO;
+import oose.dea.rest.DTO.UserDTO;
 import oose.dea.domain.User;
 
 import javax.inject.Inject;

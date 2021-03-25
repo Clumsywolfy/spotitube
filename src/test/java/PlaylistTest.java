@@ -4,10 +4,10 @@ import oose.dea.DAO.ITrackDAO;
 import oose.dea.domain.Playlist;
 import oose.dea.domain.Track;
 import oose.dea.domain.User;
-import oose.dea.resource.DTO.PlaylistDTO;
-import oose.dea.resource.DTO.PlaylistsDTO;
-import oose.dea.resource.DTO.TrackDTO;
-import oose.dea.resource.PlaylistService;
+import oose.dea.rest.DTO.PlaylistDTO;
+import oose.dea.rest.DTO.PlaylistsDTO;
+import oose.dea.rest.DTO.TrackDTO;
+import oose.dea.rest.PlaylistService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

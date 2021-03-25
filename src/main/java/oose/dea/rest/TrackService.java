@@ -1,12 +1,11 @@
-package oose.dea.resource;
+package oose.dea.rest;
 
 import oose.dea.DAO.ILoginDAO;
 import oose.dea.DAO.ITrackDAO;
 import oose.dea.domain.Track;
 import oose.dea.exceptions.badRequestException;
-import oose.dea.exceptions.unauthorizedUserException;
-import oose.dea.resource.DTO.TrackDTO;
-import oose.dea.resource.DTO.TracksDTO;
+import oose.dea.rest.DTO.TrackDTO;
+import oose.dea.rest.DTO.TracksDTO;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

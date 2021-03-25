@@ -1,7 +1,7 @@
 
 import oose.dea.DAO.ILoginDAO;
-import oose.dea.resource.DTO.UserDTO;
-import oose.dea.resource.LoginService;
+import oose.dea.rest.DTO.UserDTO;
+import oose.dea.rest.LoginService;
 import oose.dea.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,11 +19,14 @@ public class LoginTest {
     private User user;
     private ILoginDAO loginDAOMock;
 
+    private String username;
+    private String password;
+
 
     @BeforeEach
     public void setup(){
-        String username = "Debbie";
-        String password = "Kauw";
+        username = "Debbie";
+        password = "Kauw";
 
         loginServiceMock = new LoginService();
         userDTO = new UserDTO();

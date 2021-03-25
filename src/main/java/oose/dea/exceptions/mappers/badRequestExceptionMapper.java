@@ -1,4 +1,6 @@
-package oose.dea.exceptions;
+package oose.dea.exceptions.mappers;
+
+import oose.dea.exceptions.badRequestException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
