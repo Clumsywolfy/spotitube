@@ -17,7 +17,7 @@ public class TrackDAOTest {
     private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
-    private TrackDAO trackDAOMock;
+    private TrackDAO sut;
 
     int playlistToTest;
     int trackIdToTest;
@@ -31,8 +31,8 @@ public class TrackDAOTest {
         connection = mock(Connection.class);
         preparedStatement = mock(PreparedStatement.class);
         resultSet = mock(ResultSet.class);
-        trackDAOMock = new TrackDAO();
-        trackDAOMock.setDataSource(dataSource);
+        sut = new TrackDAO();
+        sut.setDataSource(dataSource);
 
         playlistToTest = 1;
         trackIdToTest = 90;
@@ -52,7 +52,7 @@ public class TrackDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(true).thenReturn(false);
 
-            trackDAOMock.getAllTracks(playlistToTest, isTrackToTest);
+            sut.getAllTracks(playlistToTest, isTrackToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistToTest);
@@ -76,7 +76,7 @@ public class TrackDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            trackDAOMock.getAllTracks(playlistToTest, isPlaylistToTest);
+            sut.getAllTracks(playlistToTest, isPlaylistToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistToTest);
@@ -100,7 +100,7 @@ public class TrackDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            trackDAOMock.setTrackAvailable(offlineToTest, trackIdToTest);
+            sut.setTrackAvailable(offlineToTest, trackIdToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setBoolean(1, offlineToTest);

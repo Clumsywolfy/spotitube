@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 public class LoginTest {
 
-    private LoginService loginServiceMock;
+    private LoginService sut;
     private UserDTO userDTO;
     private User user;
     private ILoginDAO loginDAOMock;
@@ -28,7 +28,7 @@ public class LoginTest {
         username = "Debbie";
         password = "Kauw";
 
-        loginServiceMock = new LoginService();
+        sut = new LoginService();
         userDTO = new UserDTO();
         user = new User(username);
         loginDAOMock = mock(ILoginDAO.class);
@@ -41,9 +41,9 @@ public class LoginTest {
     public void loginSuccesTest() {
         try{
         when(loginDAOMock.getLogin(userDTO.user, userDTO.password)).thenReturn(user);
-        loginServiceMock.setLoginDAO(loginDAOMock);
+        sut.setLoginDAO(loginDAOMock);
 
-        Response response = loginServiceMock.getLogin(userDTO);
+        Response response = sut.getLogin(userDTO);
 
         assertEquals(200, response.getStatus());
         } catch (Exception e) {

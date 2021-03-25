@@ -17,7 +17,7 @@ public class PlaylistDAOTest {
     private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
-    private PlaylistDAO playlistDAO;
+    private PlaylistDAO sut;
 
     private int playlistIdToTest;
     private String nameToTest;
@@ -32,8 +32,8 @@ public class PlaylistDAOTest {
         connection = mock(Connection.class);
         preparedStatement = mock(PreparedStatement.class);
         resultSet = mock(ResultSet.class);
-        playlistDAO = new PlaylistDAO();
-        playlistDAO.setDataSource(dataSource);
+        sut = new PlaylistDAO();
+        sut.setDataSource(dataSource);
 
         playlistIdToTest = 1;
         nameToTest = "Metal";
@@ -68,7 +68,7 @@ public class PlaylistDAOTest {
 
             when(resultSet.getInt("duration")).thenReturn(lengthToTest);
 
-            playlistDAO.getAllPlaylists();
+            sut.getAllPlaylists();
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).executeQuery();
@@ -90,7 +90,7 @@ public class PlaylistDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            playlistDAO.getAllPlaylists();
+            sut.getAllPlaylists();
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).executeQuery();
@@ -114,7 +114,7 @@ public class PlaylistDAOTest {
 
             when(resultSet.getInt("duration")).thenReturn(lengthToTest);
 
-            int length = playlistDAO.calculatePlaylistLength(playlistIdToTest);
+            int length = sut.calculatePlaylistLength(playlistIdToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistIdToTest);
@@ -139,7 +139,7 @@ public class PlaylistDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            playlistDAO.deletePlaylist(playlistIdToTest,ownerToTest);
+            sut.deletePlaylist(playlistIdToTest,ownerToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistIdToTest);
@@ -163,7 +163,7 @@ public class PlaylistDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            playlistDAO.addPlaylist(nameToTest,ownerToTest);
+            sut.addPlaylist(nameToTest,ownerToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setString(1, nameToTest);
@@ -187,7 +187,7 @@ public class PlaylistDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            playlistDAO.editPlaylist(nameToTest, playlistIdToTest,ownerToTest);
+            sut.editPlaylist(nameToTest, playlistIdToTest,ownerToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setString(1, nameToTest);
@@ -212,7 +212,7 @@ public class PlaylistDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            playlistDAO.deleteTrackFromPlaylist(playlistIdToTest, trackIdToTest,ownerToTest);
+            sut.deleteTrackFromPlaylist(playlistIdToTest, trackIdToTest,ownerToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistIdToTest);
@@ -237,7 +237,7 @@ public class PlaylistDAOTest {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(false);
 
-            playlistDAO.addTrackToPlaylist(playlistIdToTest, trackIdToTest);
+            sut.addTrackToPlaylist(playlistIdToTest, trackIdToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistIdToTest);
