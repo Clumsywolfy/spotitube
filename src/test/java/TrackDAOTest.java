@@ -1,4 +1,5 @@
 import oose.dea.DAO.TrackDAO;
+import oose.dea.domain.Track;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -6,6 +7,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,6 +26,7 @@ public class TrackDAOTest {
     boolean isTrackToTest;
     boolean isPlaylistToTest;
     boolean offlineToTest;
+    String expectedSQL;
 
     @BeforeEach
     public void setup(){
@@ -44,20 +47,22 @@ public class TrackDAOTest {
     @Test
     public void getAllTracksTrackTest(){
         try {
-            String expectedSQL = "SELECT * FROM track WHERE id NOT IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
+            expectedSQL = "SELECT * FROM track WHERE id NOT IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(expectedSQL)).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getInt("id")).thenReturn(trackIdToTest);
 
-            sut.getAllTracks(playlistToTest, isTrackToTest);
+            ArrayList<Track> tracksTest = sut.getAllTracks(playlistToTest, isTrackToTest);
 
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistToTest);
             verify(preparedStatement).executeQuery();
 
+            assertEquals(trackIdToTest,tracksTest.get(0).getId());
         }
         catch (Exception e){
             fail();
@@ -68,7 +73,7 @@ public class TrackDAOTest {
     @Test
     public void getAllTracksPlaylistTest(){
         try {
-            String expectedSQL = "SELECT * FROM track WHERE id IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
+            expectedSQL = "SELECT * FROM track WHERE id IN ( SELECT trackId FROM songsinlist WHERE playlistId = ?)";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
@@ -81,7 +86,6 @@ public class TrackDAOTest {
             verify(connection).prepareStatement(expectedSQL);
             verify(preparedStatement).setInt(1, playlistToTest);
             verify(preparedStatement).executeQuery();
-
         }
         catch (Exception e){
             fail();
@@ -92,7 +96,7 @@ public class TrackDAOTest {
     @Test
     public void setTrackAvailableTest(){
         try {
-            String expectedSQL = "UPDATE track SET offlineAvailable = ? WHERE id = ?";
+            expectedSQL = "UPDATE track SET offlineAvailable = ? WHERE id = ?";
 
             // instruct Mocks
             when(dataSource.getConnection()).thenReturn(connection);
