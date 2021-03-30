@@ -38,5 +38,4 @@ public class LoginService {
     public void setLoginDAO(ILoginDAO loginDAO){
         this.loginDAO = loginDAO;
     }
-
 }
